@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>球類活動配對＆拼團 | Sports Match & Group-buy</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1>球類活動配對＆拼團</h1>
+      <nav class="nav-actions">
+        <button id="btnCreateEvent" class="primary">＋ 建立活動</button>
+        <button id="btnExport" class="secondary">匯出資料</button>
+        <label class="switch">
+          <input type="checkbox" id="toggleTheme" />
+          <span class="slider"></span>
+        </label>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="intro">
+      <p>用途：個人或隊伍配對、清楚列明活動資訊（日期、時間、地點、場租、所需裝備、室內/室外、介紹人、比賽模式），並支援拼團（多人一起參加更優惠）。</p>
+    </section>
+
+    <section id="filters" class="card">
+      <h2>搜尋 / 篩選</h2>
+      <div class="filters-grid">
+        <input type="text" id="fKeyword" placeholder="關鍵字（運動種類 / 活動名稱 / 地點）" />
+        <select id="fIndoor">
+          <option value="">室內/室外（全部）</option>
+          <option value="室內">室內</option>
+          <option value="室外">室外</option>
+        </select>
+        <input type="date" id="fDateFrom" />
+        <input type="date" id="fDateTo" />
+        <select id="fMode">
+          <option value="">比賽模式（全部）</option>
+          <option value="個人配對">個人配對</option>
+          <option value="隊伍配對">隊伍配對</option>
+          <option value="自由練習">自由練習</option>
+          <option value="課程/活動">課程/活動</option>
+        </select>
+        <button id="btnClearFilters" class="secondary">清除</button>
+      </div>
+    </section>
+
+    <section>
+      <div id="eventList" class="grid"></div>
+      <p id="emptyHint" class="muted" style="display:none;">尚未有活動，請點「建立活動」新增。</p>
+    </section>
+  </main>
+
+  <!-- Create/Edit Event Modal -->
+  <dialog id="eventDialog">
+    <form id="eventForm" method="dialog">
+      <h3 id="dialogTitle">建立活動</h3>
+      <div class="form-grid">
+        <label>活動名稱
+          <input name="title" required placeholder="如：籃球 5v5 友誼賽" />
+        </label>
+        <label>運動種類
+          <input name="sport" required placeholder="如：籃球 / 足球 / 羽球" />
+        </label>
+        <label>日期
+          <input type="date" name="date" required />
+        </label>
+        <label>開始時間
+          <input type="time" name="startTime" required />
+        </label>
+        <label>結束時間
+          <input type="time" name="endTime" required />
+        </label>
+        <label>地點（城市 / 區）
+          <input name="location" required placeholder="如：台北市信義區 / 九龍尖沙咀" />
+        </label>
+        <label>場地名稱/地址
+          <input name="venue" placeholder="如：○○體育館 A 場" />
+        </label>
+        <label>場租 / 費用（貨幣+金額）
+          <input name="fee" placeholder="如：TWD 1200（均分）/ HKD 100/人" />
+        </label>
+        <label>所需裝備
+          <input name="equipment" placeholder="如：室內鞋、自備球拍、泳帽" />
+        </label>
+        <label>室內或室外
+          <select name="indoorOutdoor" required>
+            <option value="室內">室內</option>
+            <option value="室外">室外</option>
+          </select>
+        </label>
+        <label>介紹人 / 主辦
+          <input name="referrer" placeholder="如：阿明 / 社群連結" />
+        </label>
+        <label>比賽模式
+          <select name="mode" required>
+            <option value="個人配對">個人配對</option>
+            <option value="隊伍配對">隊伍配對</option>
+            <option value="自由練習">自由練習</option>
+            <option value="課程/活動">課程/活動</option>
+          </select>
+        </label>
+        <label>人數上限（總人數）
+          <input type="number" name="capacity" min="1" value="10" required />
+        </label>
+        <label>隊伍人數（若隊伍配對/比賽）
+          <input type="number" name="teamSize" min="1" placeholder="如：5（5v5 就填 5）" />
+        </label>
+        <label>拼團門檻（人數）
+          <input type="number" name="minGroupSize" min="0" value="0" />
+        </label>
+        <label>原價 / 人
+          <input type="number" name="normalPrice" min="0" step="0.01" placeholder="如：300" />
+        </label>
+        <label>拼團價 / 人
+          <input type="number" name="groupPrice" min="0" step="0.01" placeholder="如：250" />
+        </label>
+        <label>備註 / 規則
+          <textarea name="notes" rows="3" placeholder="如：遲到 10 分鐘視同放棄、攜帶證件入場、雨天備案等"></textarea>
+        </label>
+        <input type="hidden" name="id" />
+      </div>
+      <menu class="dialog-actions">
+        <button value="cancel" class="secondary">取消</button>
+        <button id="btnDeleteEvent" type="button" class="danger" style="display:none;">刪除</button>
+        <button id="btnSaveEvent" class="primary">儲存</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <!-- View/Join Modal -->
+  <dialog id="viewDialog">
+    <div id="viewContent"></div>
+    <menu class="dialog-actions">
+      <button id="btnCloseView" class="secondary">關閉</button>
+    </menu>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> 球類活動配對＆拼團 · 本站採用本機儲存（LocalStorage），資料只存在你的瀏覽器中。</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
